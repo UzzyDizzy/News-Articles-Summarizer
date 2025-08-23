@@ -134,12 +134,13 @@ def display_news(news_list, count):
             driver.get(news['link'])
             time.sleep(1)
             final_url = driver.current_url
+            html = driver.page_source
         except Exception as e:
             st.warning(f"⚠️ Failed to open link with Selenium: {e}")
             continue
 
         # Step 2: Use newspaper3k on final URL
-        parsed = parse_article_with_newspaper(final_url)
+        parsed = parse_article_with_newspaper(final_url, html=html)
         if not parsed:
             st.error("❌ Failed to parse article.")
             continue
