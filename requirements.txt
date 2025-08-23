@@ -1,0 +1,10 @@
+streamlit
+nltk
+beautifulsoup4
+requests
+newspaper3k
+pillow
+selenium
+lxml
+urllib3
+lxml_html_clean

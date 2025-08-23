@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+*.env
+*.venv
+
+.myenv/
+myenv/
+ENV/
+env/
+*.env
+*.venv
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# Streamlit cache
+.streamlit/
+.streamlit/cache/
+.streamlit/secrets.toml  # keep secrets local
+
+# Logs
+*.log
+logs/
+*.out
+*.err
+
+# Data & models
+data/
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+*.ckpt
+
+# Build & dist
+build/
+dist/
+*.egg-info/
+*.egg
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
