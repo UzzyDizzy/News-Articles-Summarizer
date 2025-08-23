@@ -90,13 +90,17 @@ def fetch_news_poster(link):
         return None
 
 @st.cache_data(ttl=3600)
-def parse_article_with_newspaper(url):
+def parse_article_with_newspaper(url, html=None):
     from newspaper import Article
 
     try:
         article = Article(url)
-        article.download()
-        article.parse()
+        if html:
+            article.set_html(html)   # use provided HTML instead of downloading
+            article.parse()
+        else:
+            article.download()
+            article.parse()
         article.nlp()
 
         return {
