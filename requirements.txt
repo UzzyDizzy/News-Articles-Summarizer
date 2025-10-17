@@ -9,3 +9,4 @@ lxml
 urllib3
 lxml_html_clean
 feedparser
+readability-lxml
