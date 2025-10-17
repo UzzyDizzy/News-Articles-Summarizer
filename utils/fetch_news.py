@@ -13,38 +13,30 @@ logging.basicConfig(level=logging.DEBUG)
 
 def test_network_and_parse_article(url, html=None):
     try:
-        article = Article(url, 
-                         language='en',
-                         fetch_images=False,  # Reduces network issues
-                         request_timeout=10)  # Add timeout
+        if not html:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            html = response.text
         
-        if html:
-            article.set_html(html)
-            article.parse()
-        else:
-            # Use requests with better error handling
-            try:
-                response = requests.get(url, timeout=10, headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                })
-                response.raise_for_status()
-                article.set_html(response.text)
-                article.parse()
-            except requests.RequestException as e:
-                st.error(f"Failed to download article: {e}")
-                return None
-        
-        article.nlp()
-
+        # Try newspaper first
+        result = parse_article_with_newspaper(url, html)
+        if result:
+            return result
+            
+        # Fallback to readability
+        from readability import Document
+        doc = Document(html)
         return {
-            'summary': article.summary,
-            'top_image': article.top_image,
-            'title': article.title,
+            'summary': doc.summary(),
+            'top_image': None,
+            'title': doc.title(),
         }
+        
     except Exception as e:
-        st.error(f"Error parsing article: {e}")
+        st.error(f"All parsing methods failed: {e}")
         return None
-
+    
+    
 @st.cache_data(ttl=3600)
 def fetch_news_by_topic_country(topic=None, country="in"):
     if topic:
