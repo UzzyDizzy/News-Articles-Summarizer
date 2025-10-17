@@ -36,7 +36,7 @@ def test_network_and_parse_article(url, html=None):
         st.error(f"All parsing methods failed: {e}")
         return None
     
-    
+
 @st.cache_data(ttl=3600)
 def fetch_news_by_topic_country(topic=None, country="in"):
     if topic:
@@ -143,29 +143,18 @@ def parse_article_with_newspaper(url, html=None):
 
 @st.cache_data(ttl=3600)
 def display_news(news_list, count):
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.by import By
     import time
-
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-
-    driver = webdriver.Chrome(options=chrome_options)
-
+    
     for idx, news in enumerate(news_list[:count], 1):
         st.write(f"**({idx}) {news['title']}**")
 
-        # Step 1: Use Selenium to get final URL
+        # Step 1: Use requests to get final URL (no Selenium)
         try:
-            driver.get(news['link'])
-            time.sleep(1)
-            final_url = driver.current_url
-            html = driver.page_source
+            response = requests.get(news['link'], timeout=10, allow_redirects=True)
+            final_url = response.url
+            html = response.text
         except Exception as e:
-            st.warning(f"⚠️ Failed to open link with Selenium: {e}")
+            st.warning(f"⚠️ Failed to open link: {e}")
             continue
 
         # Step 2: Use newspaper3k on final URL
@@ -188,8 +177,6 @@ def display_news(news_list, count):
         # Step 4: Display summary and link
         with st.expander(parsed['title'] or news['title']):
             st.markdown(f"<h6 style='text-align: justify;'>{parsed['summary']}</h6>", unsafe_allow_html=True)
-            st.markdown(f"[Read more at {news['source']}]({news['link']})")
+            st.markdown(f"[Read more at {news['source']}]({final_url})")  # Use final_url
 
         st.success("Published Date: " + news['pubDate'])
-
-    driver.quit()

@@ -61,7 +61,7 @@ def main():
         st.session_state.search_query = user_topic.strip()
         st.session_state.last_fetch_time = None  # ensure fresh fetch
         filters = {'country': 'US', 'category': None, 'num_articles': 10}
-        news_list = fetch_news_by_query(query=st.session_state.search_query, country="US")
+        news_list = fetch_news_by_query(query=st.session_state.search_query)
 
         if news_list:
             st.subheader(f"✅ Here is some '{st.session_state.search_query}' News for you")
