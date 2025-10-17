@@ -1,4 +1,4 @@
-    # utils/fetch_news.py
+# utils/fetch_news.py
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as soup, BeautifulSoup
 from PIL import Image
@@ -43,11 +43,6 @@ def test_network_and_parse_article(url, html=None):
     except Exception as e:
         logging.error(f"Error parsing article: {e}")
         return None
-
-# Test with a known URL (replace this with any article URL you want to test)
-url_to_test = "https://www.bbc.com/news/world-us-canada-67025576"
-output = test_network_and_parse_article(url_to_test)
-logging.debug(f"Output: {output}")
 
 @st.cache_data(ttl=3600)
 def fetch_news_by_topic_country(topic=None, country="in"):
@@ -182,6 +177,7 @@ def display_news(news_list, count):
 
         # Step 2: Use newspaper3k on final URL
         parsed = test_network_and_parse_article(final_url, html=html)
+        logging.debug(f"Output: {parsed}")
         if not parsed:
             st.error("❌ Failed to parse article.")
             continue
